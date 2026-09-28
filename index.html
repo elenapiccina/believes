@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Limiting Beliefs → New Beliefs</title>
+
+<style>
+:root{
+  --cream:#fffaf6;
+  --paper:#fffdfb;
+  --pink:#edcbd4;
+  --pink-light:#f8e9ed;
+  --pink-dark:#a77f89;
+  --gold:#d8bd8b;
+  --ink:#403942;
+  --muted:#95858c;
+  --line:#eadde1;
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:transparent;
+}
+
+body{
+  font-family:Georgia,"Times New Roman",serif;
+}
+
+.widget{
+  width:100%;
+  max-width:600px;
+  margin:20px auto;
+  color:var(--ink);
+}
+
+.card{
+  position:relative;
+  overflow:hidden;
+  background:var(--cream);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+}
+
+/* HEADER */
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.kicker{
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+
+h1{
+  margin:0;
+  font-size:27px;
+  font-weight:400;
+  line-height:1.05;
+}
+
+.subtitle{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.counter{
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+/* BELIEF BOXES */
+
+.section{
+  margin-top:9px;
+}
+
+.label{
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--pink-dark);
+  margin-bottom:5px;
+}
+
+textarea{
+  display:block;
+  width:100%;
+  min-height:65px;
+  resize:none;
+
+  border:1px solid var(--line);
+  border-radius:14px;
+
+  background:var(--paper);
+
+  padding:10px 11px;
+
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:15px;
+  line-height:1.35;
+  color:var(--ink);
+
+  outline:none;
+
+  transition:.2s ease;
+}
+
+textarea:focus{
+  border-color:#d8b5be;
+  box-shadow:0 0 0 3px rgba(237,203,212,.22);
+}
+
+/* TRANSFORM */
+
+.transform{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:34px;
+  color:var(--gold);
+  font-size:20px;
+  cursor:pointer;
+  user-select:none;
+  transition:.25s ease;
+}
+
+.transform:hover{
+  transform:scale(1.15);
+}
+
+/* HINT */
+
+.hint{
+  text-align:center;
+  min-height:18px;
+  margin:8px 0 11px;
+
+  color:var(--muted);
+  font-size:12px;
+  font-style:italic;
+
+  transition:.3s ease;
+}
+
+/* BUTTONS */
+
+.actions{
+  display:flex;
+  gap:7px;
+  align-items:center;
+}
+
+button{
+  border-radius:13px;
+  padding:9px 14px;
+
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:13px;
+
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.main{
+  border:0;
+  background:var(--pink);
+  color:#59464c;
+}
+
+.main:hover{
+  transform:translateY(-2px);
+}
+
+.soft{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--muted);
+}
+
+.message{
+  margin-left:auto;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* PROGRESS */
+
+.progress{
+  margin-top:12px;
+  height:4px;
+  background:#f0e5e7;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:var(--pink);
+  transition:.35s ease;
+}
+
+/* SPARKLES */
+
+.effects{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.sparkle{
+  position:absolute;
+  font-size:16px;
+  opacity:0;
+
+  animation:float 1.5s ease-out forwards;
+}
+
+@keyframes float{
+
+  0%{
+    transform:translateY(15px) scale(.5) rotate(0deg);
+    opacity:0;
+  }
+
+  20%{
+    opacity:1;
+  }
+
+  100%{
+    transform:
+      translateY(-100px)
+      translateX(var(--drift))
+      scale(1.1)
+      rotate(25deg);
+
+    opacity:0;
+  }
+}
+
+/* SUCCESS */
+
+.success{
+  display:none;
+  text-align:center;
+  padding:18px 5px 5px;
+}
+
+.success-icon{
+  font-size:38px;
+  display:block;
+
+  animation:pop .6s ease;
+}
+
+@keyframes pop{
+  0%{transform:scale(.3);opacity:0;}
+  70%{transform:scale(1.15);}
+  100%{transform:scale(1);opacity:1;}
+}
+
+.success h2{
+  margin:7px 0 4px;
+  font-size:22px;
+  font-weight:400;
+}
+
+.success p{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+@media(max-width:500px){
+
+  .card{
+    padding:15px;
+    border-radius:20px;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .message{
+    display:none;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="widget">
+
+  <div class="card">
+
+    <div class="effects" id="effects"></div>
+
+    <div class="header">
+
+      <div>
+
+        <div class="kicker">
+          mindset reset · one belief at a time
+        </div>
+
+        <h1>
+          💎 Limiting Beliefs
+        </h1>
+
+        <div class="subtitle">
+          Catch it → question it → replace it.
+        </div>
+
+      </div>
+
+      <div class="counter" id="counter">
+        0 / 2
+      </div>
+
+    </div>
+
+
+    <!-- OLD BELIEF -->
+
+    <div class="section">
+
+      <div class="label">
+        🧊 Old belief
+      </div>
+
+      <textarea
+        id="oldBelief"
+        placeholder="What do I currently believe that holds me back?"
+      ></textarea>
+
+    </div>
+
+
+    <!-- TRANSFORM -->
+
+    <div
+      class="transform"
+      id="transform"
+      title="Transform belief"
+    >
+      ↓ ✦ ↓
+    </div>
+
+
+    <!-- NEW BELIEF -->
+
+    <div class="section">
+
+      <div class="label">
+        🌷 New belief
+      </div>
+
+      <textarea
+        id="newBelief"
+        placeholder="What would I choose to believe instead?"
+      ></textarea>
+
+    </div>
+
+
+    <div class="hint" id="hint">
+      You don't need to believe it 100% yet.
+    </div>
+
+
+    <div class="actions">
+
+      <button
+        class="main"
+        id="transformButton"
+        type="button"
+      >
+        Transform ✨
+      </button>
+
+      <button
+        class="soft"
+        id="clearButton"
+        type="button"
+      >
+        Clear
+      </button>
+
+      <div class="message" id="message">
+        Small thought → big shift.
+      </div>
+
+    </div>
+
+
+    <div class="progress">
+
+      <div
+        class="progress-bar"
+        id="progressBar"
+      ></div>
+
+    </div>
+
+
+    <!-- SUCCESS -->
+
+    <div
+      class="success"
+      id="success"
+    >
+
+      <span class="success-icon">
+        💎
+      </span>
+
+      <h2>
+        Belief upgraded.
+      </h2>
+
+      <p>
+        Your brain needs repetition, not perfection.
+      </p>
+
+      <div style="margin-top:12px">
+
+        <button
+          class="soft"
+          id="backButton"
+          type="button"
+        >
+          Write another
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+(function(){
+
+  const oldBelief =
+    document.getElementById("oldBelief");
+
+  const newBelief =
+    document.getElementById("newBelief");
+
+  const counter =
+    document.getElementById("counter");
+
+  const progressBar =
+    document.getElementById("progressBar");
+
+  const transformButton =
+    document.getElementById("transformButton");
+
+  const transform =
+    document.getElementById("transform");
+
+  const clearButton =
+    document.getElementById("clearButton");
+
+  const backButton =
+    document.getElementById("backButton");
+
+  const hint =
+    document.getElementById("hint");
+
+  const message =
+    document.getElementById("message");
+
+  const effects =
+    document.getElementById("effects");
+
+  const success =
+    document.getElementById("success");
+
+
+  /* =========================
+     SAVE
+  ========================= */
+
+  function save(){
+
+    localStorage.setItem(
+      "limitingBelief",
+      oldBelief.value
+    );
+
+    localStorage.setItem(
+      "newBelief",
+      newBelief.value
+    );
+
+  }
+
+
+  function load(){
+
+    oldBelief.value =
+      localStorage.getItem(
+        "limitingBelief"
+      ) || "";
+
+    newBelief.value =
+      localStorage.getItem(
+        "newBelief"
+      ) || "";
+
+    update();
+
+  }
+
+
+  /* =========================
+     PROGRESS
+  ========================= */
+
+  function update(){
+
+    const oldDone =
+      oldBelief.value.trim().length > 0;
+
+    const newDone =
+      newBelief.value.trim().length > 0;
+
+    const count =
+      (oldDone ? 1 : 0) +
+      (newDone ? 1 : 0);
+
+    counter.textContent =
+      count + " / 2";
+
+    progressBar.style.width =
+      (count / 2 * 100) + "%";
+
+    if(count === 0){
+
+      message.textContent =
+        "Small thought → big shift.";
+
+    }
+
+    else if(count === 1){
+
+      message.textContent =
+        "Now give yourself a better option.";
+
+    }
+
+    else{
+
+      message.textContent =
+        "Ready to transform ✨";
+
+    }
+
+    save();
+
+  }
+
+
+  /* =========================
+     SOUND
+  ========================= */
+
+  function sound(
+    frequency = 600,
+    duration = .15
+  ){
+
+    try{
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if(!AudioContext) return;
+
+      const ctx =
+        new AudioContext();
+
+      const osc =
+        ctx.createOscillator();
+
+      const gain =
+        ctx.createGain();
+
+      osc.type = "sine";
+
+      osc.frequency.value =
+        frequency;
+
+      gain.gain.setValueAtTime(
+        .0001,
+        ctx.currentTime
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .045,
+        ctx.currentTime + .02
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .0001,
+        ctx.currentTime + duration
+      );
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+
+      osc.stop(
+        ctx.currentTime +
+        duration +
+        .03
+      );
+
+      setTimeout(
+        () => ctx.close(),
+        700
+      );
+
+    }catch(e){}
+
+  }
+
+
+  /* =========================
+     EFFECT
+  ========================= */
+
+  function sparkle(){
+
+    const item =
+      document.createElement("span");
+
+    item.className =
+      "sparkle";
+
+    const symbols = [
+      "✦",
+      "♡",
+      "✧",
+      "💎",
+      "⋆"
+    ];
+
+    item.textContent =
+      symbols[
+        Math.floor(
+          Math.random() * symbols.length
+        )
+      ];
+
+    item.style.left =
+      (20 + Math.random() * 60) + "%";
+
+    item.style.bottom =
+      (30 + Math.random() * 30) + "px";
+
+    item.style.setProperty(
+      "--drift",
+      ((Math.random() - .5) * 80) + "px"
+    );
+
+    effects.appendChild(item);
+
+    setTimeout(
+      () => item.remove(),
+      1600
+    );
+
+  }
+
+
+  function celebration(){
+
+    for(
+      let i = 0;
+      i < 12;
+      i++
+    ){
+
+      setTimeout(
+        sparkle,
+        i * 70
+      );
+
+    }
+
+    sound(523,.15);
+
+    setTimeout(
+      () => sound(659,.15),
+      130
+    );
+
+    setTimeout(
+      () => sound(784,.22),
+      260
+    );
+
+  }
+
+
+  /* =========================
+     HINTS
+  ========================= */
+
+  const hints = [
+
+    "Is this actually a fact — or just a story?",
+
+    "Would you say this to your best friend?",
+
+    "What evidence proves this belief wrong?",
+
+    "What would you believe if fear wasn't deciding?",
+
+    "You don't need to believe the new thought 100% yet.",
+
+    "Choose a belief that gives you room to act.",
+
+    "Your brain learns through repetition.",
+
+    "Make the new belief believable enough to practice."
+
+  ];
+
+
+  function randomHint(){
+
+    hint.textContent =
+      hints[
+        Math.floor(
+          Math.random() * hints.length
+        )
+      ];
+
+  }
+
+
+  /* =========================
+     INPUT
+  ========================= */
+
+  oldBelief.addEventListener(
+    "input",
+    function(){
+
+      update();
+
+      if(
+        this.value.length > 0 &&
+        this.value.length % 8 === 0
+      ){
+
+        sparkle();
+
+        sound(480,.10);
+
+      }
+
+    }
+  );
+
+
+  newBelief.addEventListener(
+    "input",
+    function(){
+
+      update();
+
+      if(
+        this.value.length > 0 &&
+        this.value.length % 8 === 0
+      ){
+
+        sparkle();
+
+        sound(620,.10);
+
+      }
+
+    }
+  );
+
+
+  /* =========================
+     TRANSFORM
+  ========================= */
+
+  function doTransform(){
+
+    if(
+      !oldBelief.value.trim()
+    ){
+
+      oldBelief.focus();
+
+      message.textContent =
+        "Catch the old belief first.";
+
+      sound(300,.12);
+
+      return;
+
+    }
+
+    if(
+      !newBelief.value.trim()
+    ){
+
+      newBelief.focus();
+
+      message.textContent =
+        "Now create a better belief.";
+
+      randomHint();
+
+      sound(380,.12);
+
+      return;
+
+    }
+
+    celebration();
+
+    setTimeout(
+      function(){
+
+        oldBelief
+          .parentElement
+          .style.display =
+          "none";
+
+        transform.style.display =
+          "none";
+
+        newBelief
+          .parentElement
+          .style.display =
+          "none";
+
+        hint.style.display =
+          "none";
+
+        document
+          .querySelector(".actions")
+          .style.display =
+          "none";
+
+        document
+          .querySelector(".progress")
+          .style.display =
+          "none";
+
+        success.style.display =
+          "block";
+
+      },
+      350
+    );
+
+  }
+
+
+  transformButton.addEventListener(
+    "click",
+    doTransform
+  );
+
+  transform.addEventListener(
+    "click",
+    doTransform
+  );
+
+
+  /* =========================
+     CLEAR
+  ========================= */
+
+  clearButton.addEventListener(
+    "click",
+    function(){
+
+      oldBelief.value = "";
+      newBelief.value = "";
+
+      localStorage.removeItem(
+        "limitingBelief"
+      );
+
+      localStorage.removeItem(
+        "newBelief"
+      );
+
+      update();
+
+      hint.textContent =
+        "You don't need to believe it 100% yet.";
+
+      message.textContent =
+        "Fresh page. Start with one thought.";
+
+      sound(330,.12);
+
+    }
+  );
+
+
+  /* =========================
+     BACK
+  ========================= */
+
+  backButton.addEventListener(
+    "click",
+    function(){
+
+      success.style.display =
+        "none";
+
+      oldBelief
+        .parentElement
+        .style.display =
+        "block";
+
+      transform.style.display =
+        "flex";
+
+      newBelief
+        .parentElement
+        .style.display =
+        "block";
+
+      hint.style.display =
+        "block";
+
+      document
+        .querySelector(".actions")
+        .style.display =
+        "flex";
+
+      document
+        .querySelector(".progress")
+        .style.display =
+        "block";
+
+      oldBelief.focus();
+
+    }
+  );
+
+
+  load();
+
+})();
+
+</script>
+
+</body>
+</html>
